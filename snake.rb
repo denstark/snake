@@ -4,8 +4,10 @@ require 'logger'
 Curses.init_screen
 Curses.curs_set 0 # Invisible Cursor
 
+$logger = Logger.new('/tmp/snake.log')
+
 class SnakeWindow
-  attr_reader :mainWindow, :logger
+  attr_reader :mainWindow
   attr_accessor :curX, :curY
 
   def initialize
@@ -13,8 +15,7 @@ class SnakeWindow
     @mainWindow.box("|", "-")
     @mainWindow.refresh
     @mainWindow.keypad true
-    @logger = Logger.new('/tmp/snake.log')
-    # @mainWindow.nodelay = true
+    @mainWindow.nodelay = true
     @curX = 0
     @curY = 0
   end
@@ -38,11 +39,19 @@ class SnakeWindow
     mainWindow.setpos(y, x)
     self.curY = y
     self.curX = x
-    logger.info "curY = #{curY}, curX = #{curX}"
+    $logger.info "curY = #{curY}, curX = #{curX}"
   end
 
   def clearScreen
     mainWindow.clear
+  end
+
+  def maxX
+    return self.mainWindow.maxx
+  end
+
+  def maxY
+    return self.mainWindow.maxy
   end
 
   def printChar(char, y = self.curY, x = self.curX)
@@ -52,36 +61,89 @@ class SnakeWindow
   end
 end
 
+class MenuWindow
+end
+
+class Snake
+  RIGHT = 'R'
+  LEFT = 'L'
+  UP = 'U'
+  DOWN = 'D'
+
+  attr_reader :symbol
+  attr_accessor :direction, :headX, :headY, :length
+
+  def initialize
+    @symbol = '#'
+    @headX = 5
+    @headY = 5
+    @length = 1
+    @direction = nil
+  end
+
+  def newPos(window, direction)
+    case direction
+    when Snake::RIGHT
+      newHeadX = self.headX + 1
+      if newHeadX > window.maxX
+        newHeadX = window.maxX
+      end
+      self.headX = newHeadX
+    when Snake::LEFT
+      newHeadX = self.headX - 1
+      if newHeadX < 1
+        newHeadX = 1
+      end
+      self.headX = newHeadX
+    when Snake::UP
+      newHeadY = self.headY - 1
+      if newHeadY < 1
+        newHeadY = 1
+      end
+      self.headY = newHeadY
+    when Snake::DOWN
+      newHeadY = self.headY + 1
+      if newHeadY > window.maxY
+        newHeadY = window.maxY
+      end
+      self.headY = newHeadY
+    end
+  end
+end
+
 begin
   win = SnakeWindow.new
-  win.logger.info "------- NEW GAME -------"
-  win.setPos(1, 5)
+  $logger.info "------- NEW GAME -------"
+  snake = Snake.new
   running = true
+  direction = Snake::UP
   while (running) do
     char = win.mainWindow.getch
-    win.logger.info "char: #{char}"
+    $logger.info "char: #{char}"
     case char
     when Curses::KEY_LEFT, "h"
-      win.curX = win.curX - 1
-      win.logger.info "Received left"
+      direction = Snake::LEFT
+      $logger.info "Received left"
     when Curses::KEY_RIGHT, "l"
-      win.curX = win.curX + 1
-      win.logger.info "Received right"
+      direction = Snake::RIGHT
+      $logger.info "Received right"
     when Curses::KEY_DOWN, "j"
-      win.curY = win.curY + 1
-      win.logger.info "Received down"
+      direction = Snake::DOWN
+      $logger.info "Received down"
     when Curses::KEY_UP, "k"
-      win.curY = win.curY - 1
-      win.logger.info "Received up"
+      direction = Snake::UP
+      $logger.info "Received up"
     when "Q"
       break
     end
 
+    $logger.info "Direction is #{direction}"
+    snake.newPos(win, direction)
     win.mainWindow.clear
     win.mainWindow.box("|", "-")
-    win.printChar('#', win.curY, win.curX)
+    win.printChar(snake.symbol, snake.headY, snake.headX)
     win.mainWindow.refresh
-    # logger.info "Char is: #{char}"
+    sleep 0.05
   end
 ensure
   Curses.close_screen
