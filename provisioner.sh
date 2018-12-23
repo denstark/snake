@@ -4,10 +4,8 @@ yum -y -q install epel-release
 yum -y -q install vim
 yum -y -q install rh-ruby23
 yum -y -q install rh-ruby23-ruby-devel nodejs gcc make libxml2 libxml2-devel mariadb-devel zlib-devel libxslt-devel
-yum -y -q install mariadb mariadb-server
 yum -y -q install sqlite-devel
 yum -y -q groupinstall 'Development Tools'
-yum -y -q install git
 yum -y -q install tmux
 yum -y -q install ncurses-devel
 su - vagrant -c 'echo "source /opt/rh/rh-ruby23/enable" >> ~/.bashrc'
