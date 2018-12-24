@@ -1,7 +1,7 @@
 class SnakeWindow
-  WINDOW_WIDTH = 100
-  WINDOW_HEIGHT = 50
-  attr_reader :mainWindow
+  WINDOW_WIDTH = 34
+  WINDOW_HEIGHT = 30
+  attr_reader :mainWindow, :food
   attr_accessor :curX, :curY
 
   def initialize
@@ -13,6 +13,7 @@ class SnakeWindow
     @curX = 0
     @curY = 0
     @logger = SLogger.instance.logger
+    @food = Food.new
   end
 
   def setPos(y, x)
