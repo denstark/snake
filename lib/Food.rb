@@ -8,7 +8,7 @@ class Food
   end
 
   def newFood
-    @x = rand(2..SnakeWindow::WINDOW_WIDTH - 1)
-    @y = rand(2..SnakeWindow::WINDOW_HEIGHT - 1)
+    @x = rand(2..SnakeWindow::WINDOW_WIDTH - 2)
+    @y = rand(2..SnakeWindow::WINDOW_HEIGHT - 2)
   end
 end

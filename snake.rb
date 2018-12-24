@@ -6,19 +6,25 @@ Curses.curs_set 0 # Invisible Cursor
 Curses.noecho
 Curses.raw
 Curses.ESCDELAY = 0
+game = true
 begin
+while (game) do
   logger = SLogger.instance.logger
-  win = SnakeWindow.new
   logger.info "------- NEW GAME -------"
+  win = SnakeWindow.new
   snake = Snake.new
-  running = true
+  running = false
   direction = snake.randDirection
-  logger.info "Direction: #{direction}"
-  add = true
-
-  # Main Game Loop
-
-  while (running) do
+  mainMenu = MainMenuWindow.new
+  r = mainMenu.doMenu
+  case r
+  when 'Q', 'q'
+    break
+  when 'N', 'n'
+    running = true
+  end
+  
+  while (running) do # Main Game Loop
     char = win.mainWindow.getch
     logger.info "char: #{char}"
 
@@ -46,8 +52,10 @@ begin
       logger.info "Received up"
     when 27
       menu = MenuWindow.new
-      menu.doMenu
-    when "Q"
+      r = menu.doMenu
+    end
+
+    if r == 'Q'
       break
     end
 
@@ -56,11 +64,14 @@ begin
     win.mainWindow.clear
     win.mainWindow.box("|", "-")
     win.printChar(win.food.symbol, win.food.y, win.food.x)
-    snake.next(win)
+    isDead = snake.next(win)
     snake.body.each { |segment| 
       logger.info "Segment y: #{segment.y} Segment x: #{segment.x}"
       win.printChar(snake.symbol, segment.y, segment.x)
     }
+    if isDead == 0
+      break
+    end
     win.mainWindow.refresh
     logger.info "FoodY: #{win.food.y} FoodX: #{win.food.x} "
     if snake.body.last.x == win.food.x && snake.body.last.y == win.food.y
@@ -70,6 +81,8 @@ begin
     end
     sleep 0.1
   end
+  # Game over things can go here
+end
 ensure
   Curses.close_screen
 end

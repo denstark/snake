@@ -62,27 +62,32 @@ class Snake
     case @direction
     when Snake::RIGHT
       newHeadX = lastSegX + 1 # Create Constant
-      if newHeadX > window.maxX
-        newHeadX = window.maxX
+      if newHeadX > window.maxX - 2
+        return 0
       end
     when Snake::LEFT
       newHeadX = lastSegX - 1 # Create Constant
-      if newHeadX < 1
-        newHeadX = 1
+      if newHeadX < 2
+        return 0
       end
     when Snake::UP
       newHeadY = lastSegY - 1
-      if newHeadY < 1
-        newHeadY = 1
+      if newHeadY < 2
+        return 0
       end
     when Snake::DOWN
       newHeadY = lastSegY + 1
-      if newHeadY > window.maxY
-        newHeadY = window.maxY
+      if newHeadY > window.maxY - 2
+        return 0
       end
     end
     logger.info "--- POST PROCESSING ---"
     logger.info "New Head Y: #{newHeadY} New Head X: #{newHeadX}"
+    @body.each {|segment|
+      if newHeadY == segment.y && newHeadX == segment.x
+        return 0
+      end
+    }
     @body.push(SnakeSegment.new(newHeadY, newHeadX))
   end
 
@@ -96,25 +101,25 @@ class Snake
     when Snake::RIGHT
       newHeadX = self.headX + 1 # Create Constant
       if newHeadX > window.maxX
-        newHeadX = window.maxX
+        return 0
       end
       self.headX = newHeadX
     when Snake::LEFT
       newHeadX = self.headX - 1 # Create Constant
       if newHeadX < 1
-        newHeadX = 1
+        return 0
       end
       self.headX = newHeadX
     when Snake::UP
       newHeadY = self.headY - 1
       if newHeadY < 1
-        newHeadY = 1
+        return 0
       end
       self.headY = newHeadY
     when Snake::DOWN
       newHeadY = self.headY + 1
       if newHeadY > window.maxY
-        newHeadY = window.maxY
+        return 0
       end
       self.headY = newHeadY
     end

@@ -1,4 +1,4 @@
-class MenuWindow
+class MainMenuWindow
   WINDOW_HEIGHT = 10
   WINDOW_WIDTH = 30
 
@@ -13,9 +13,11 @@ class MenuWindow
 
   def doMenu
     mainWindow.setpos(2, 6)
-    mainWindow.addstr("Q: Quit")
+    mainWindow.addstr("N: New Game")
     mainWindow.setpos(3, 6)
-    mainWindow.addstr("ESC: Resume Game")
+    mainWindow.addstr("H: High Score")
+    mainWindow.setpos(4, 6)
+    mainWindow.addstr("Q: Quit")
     return mainWindow.getch
   end
 end
