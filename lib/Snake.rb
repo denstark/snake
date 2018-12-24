@@ -95,33 +95,4 @@ class Snake
     directions = [Snake::RIGHT, Snake::LEFT, Snake::UP, Snake::DOWN]
     return directions.sample
   end
-
-  def newPos(window, direction)
-    case direction
-    when Snake::RIGHT
-      newHeadX = self.headX + 1 # Create Constant
-      if newHeadX > window.maxX
-        return 0
-      end
-      self.headX = newHeadX
-    when Snake::LEFT
-      newHeadX = self.headX - 1 # Create Constant
-      if newHeadX < 1
-        return 0
-      end
-      self.headX = newHeadX
-    when Snake::UP
-      newHeadY = self.headY - 1
-      if newHeadY < 1
-        return 0
-      end
-      self.headY = newHeadY
-    when Snake::DOWN
-      newHeadY = self.headY + 1
-      if newHeadY > window.maxY
-        return 0
-      end
-      self.headY = newHeadY
-    end
-  end
 end
