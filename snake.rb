@@ -11,8 +11,11 @@ begin
 while (game) do
   logger = SLogger.instance.logger
   logger.info "------- NEW GAME -------"
+  screenWin = ScreenWindow.instance
   win = SnakeWindow.new
   snake = Snake.new
+  scoreObj = Score.instance
+  logger.info "High Score is: #{scoreObj.hiScore}"
   running = false
   direction = snake.randDirection
   mainMenu = MainMenuWindow.new
@@ -63,7 +66,6 @@ while (game) do
     snake.direction = direction
     win.mainWindow.clear
     win.mainWindow.box("|", "-")
-    win.printChar(win.food.symbol, win.food.y, win.food.x)
     isDead = snake.next(win)
     snake.body.each { |segment| 
       logger.info "Segment y: #{segment.y} Segment x: #{segment.x}"
@@ -72,17 +74,33 @@ while (game) do
     if isDead == 0
       break
     end
-    win.mainWindow.refresh
     logger.info "FoodY: #{win.food.y} FoodX: #{win.food.x} "
     if snake.body.last.x == win.food.x && snake.body.last.y == win.food.y
       logger.info "--- FOOD EATEN ---"
+      scoreObj.addToCurScore(1000)
+      logger.info "Current Score: #{scoreObj.curScore}"
       win.food.newFood
       snake.addSegment(win)
     end
+    scoreObj.checkHiScore
+    win.printChar(win.food.symbol, win.food.y, win.food.x)
+
+    # Print Scores
+    screenWin.print(" " * 50, win.top - 1, win.left)
+    screenWin.print("Score: #{scoreObj.curScore}", win.top - 1, win.left)
+    hiScoreTxt = "High Score: #{scoreObj.hiScore}"
+    screenWin.print(hiScoreTxt, win.top - 1, win.right - hiScoreTxt.length)
+    screenWin.mainWindow.refresh
+
+    win.mainWindow.refresh
     sleep 0.1
   end
   # Game over things can go here
+  Curses::beep
+  scoreObj.curScore = 0
+  win.mainWindow.close
 end
 ensure
+  Score.instance.writeScoreToFile
   Curses.close_screen
 end

@@ -1,18 +1,21 @@
 class SnakeWindow
   WINDOW_WIDTH = 34
   WINDOW_HEIGHT = 30
-  attr_reader :mainWindow, :food
+  attr_reader :mainWindow, :food, :top, :left, :right
   attr_accessor :curX, :curY
 
   def initialize
-    @mainWindow = Curses::Window.new(WINDOW_HEIGHT, WINDOW_WIDTH, (Curses.lines - WINDOW_HEIGHT) / 2, (Curses.cols - WINDOW_WIDTH) / 2 )
+    @logger = SLogger.instance.logger
+    @top = (Curses.lines - WINDOW_HEIGHT) / 2
+    @left = (Curses.cols - WINDOW_WIDTH) / 2
+    @right = @left + WINDOW_WIDTH
+    @mainWindow = Curses::Window.new(WINDOW_HEIGHT, WINDOW_WIDTH, @top, @left)
     @mainWindow.box("|", "-")
     @mainWindow.refresh
     @mainWindow.keypad true
     @mainWindow.nodelay = true
     @curX = 0
     @curY = 0
-    @logger = SLogger.instance.logger
     @food = Food.new
   end
 

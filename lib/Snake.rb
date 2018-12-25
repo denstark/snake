@@ -72,7 +72,7 @@ class Snake
       end
     when Snake::UP
       newHeadY = lastSegY - 1
-      if newHeadY < 2
+      if newHeadY < 1
         return 0
       end
     when Snake::DOWN

@@ -14,9 +14,7 @@ class MainMenuWindow
   def doMenu
     mainWindow.setpos(2, 6)
     mainWindow.addstr("N: New Game")
-    mainWindow.setpos(3, 6)
-    mainWindow.addstr("H: High Score")
-    mainWindow.setpos(4, 6)
+    mainWindow.setpos(7, 6)
     mainWindow.addstr("Q: Quit")
     return mainWindow.getch
   end
